@@ -16,9 +16,15 @@ public class Movement : MonoBehaviour
     public float sensitivity = 3f;
 
     float rotX;
-    float rotY;
+    //float rotY;
 
     Transform mTransform;
+
+    //Bomb condition
+    bool iHaveBomb = false;
+
+    public delegate void PassBomb();
+    public static event PassBomb OnPassBomb;
 
 	void Start ()
     {
@@ -56,8 +62,27 @@ public class Movement : MonoBehaviour
     public void MoveCamera()
     {
         rotX = Input.GetAxis(mouseX) * sensitivity;
-        rotY = Input.GetAxis(mouseY) * sensitivity;
+       // rotY = Input.GetAxis(mouseY) * sensitivity;
 
         mTransform.Rotate(0, rotX, 0);
+        //mTransform.Rotate(-rotY,0,0);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        GameObject collisioned = collision.gameObject;
+
+        if (collisioned.tag == "Player")
+        {
+            BombSticked();
+        }
+    }
+
+    public void BombSticked()
+    {
+        if (iHaveBomb == true)
+        {
+            OnPassBomb();
+        }
     }
 }
